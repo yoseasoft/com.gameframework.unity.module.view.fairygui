@@ -11,22 +11,22 @@ namespace Game.Module.View.Fairygui
     /// <summary>
     /// 程序集的管理模块对象类
     /// </summary>
-    public static class GameModule
+    public class GameModule : GameEngine.IHotModule
     {
         /// <summary>
         /// 初始化回调函数
         /// </summary>
-        public static void OnInitialize()
+        public void Startup()
         {
-            GameEngine.GuiHandler.Instance.RegisterFormManager<FairyFormManager>();
+            GameEngine.GameApi.RegisterFormManager<FairyFormManager>();
         }
 
         /// <summary>
         /// 清理回调函数
         /// </summary>
-        public static void OnCleanup()
+        public void Shutdown()
         {
-            GameEngine.GuiHandler.Instance.UnregisterCurrentFormManager();
+            GameEngine.GameApi.UnregisterCurrentFormManager();
         }
     }
 }
