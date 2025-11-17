@@ -1,0 +1,22 @@
+{
+    "name": "Game.Module.View.Fairygui",
+    "rootNamespace": "",
+    "references": [
+        "GooAsset",
+        "Nova.Engine",
+        "Nova.Basic",
+        "Nova.UniTask",
+        "Nova.FairyGUI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "GAME_COMPILE || UNITY_EDITOR"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
