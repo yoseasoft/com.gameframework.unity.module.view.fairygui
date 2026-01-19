@@ -63,7 +63,7 @@ namespace Game.Module.View.Fairygui
             {
                 if (null == _fairyGuiResourcePath)
                 {
-                    _fairyGuiResourcePath = NovaEngine.Environment.GetSystemPath("FAIRYGUI_PATH");
+                    _fairyGuiResourcePath = NovaEngine.Environment.GetSystemPath("GUI_PATH");
                     Debugger.Assert(false == string.IsNullOrEmpty(_fairyGuiResourcePath), "Invalid FairyGui resource path.");
                 }
 
