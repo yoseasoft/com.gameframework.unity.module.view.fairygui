@@ -6,11 +6,10 @@
 /// 功能描述：
 /// </summary>
 
+using System;
 using GameEngine;
 
-using SystemType = System.Type;
-
-namespace Game.Module.View.Fairygui
+namespace GameFramework.View.Fairygui
 {
     public class FairyFormManager : IFormManager
     {
@@ -29,7 +28,7 @@ namespace Game.Module.View.Fairygui
             FairyFormHelper.Update();
         }
 
-        public Form CreateForm(SystemType viewType)
+        public Form CreateForm(Type viewType)
         {
             return new FairyForm(viewType);
         }

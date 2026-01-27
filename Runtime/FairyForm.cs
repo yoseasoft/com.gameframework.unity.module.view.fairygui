@@ -6,15 +6,13 @@
 /// 功能描述：
 /// </summary>
 
+using System;
+using Cysharp.Threading.Tasks;
 using GameEngine;
-
-using SystemType = System.Type;
 
 using FairyGComponent = FairyGUI.GComponent;
 
-using UniTask = Cysharp.Threading.Tasks.UniTask;
-
-namespace Game.Module.View.Fairygui
+namespace GameFramework.View.Fairygui
 {
     /// <summary>
     /// 基于FairyGui封装的窗口对象类
@@ -41,7 +39,7 @@ namespace Game.Module.View.Fairygui
         /// </summary>
         public override object Root => _window?.contentPane;
 
-        internal FairyForm(SystemType viewType) : base(viewType)
+        internal FairyForm(Type viewType) : base(viewType)
         {
             _settings = new WindowSettings(viewType?.Name);
         }
@@ -98,7 +96,7 @@ namespace Game.Module.View.Fairygui
         /// </summary>
         protected override sealed void Hide()
         {
-            Debugger.Throw<System.NotImplementedException>();
+            Debugger.Throw<NotImplementedException>();
         }
     }
 }

@@ -6,11 +6,11 @@
 /// 功能描述：
 /// </summary>
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 
-using SystemType = System.Type;
 using UnityObject = UnityEngine.Object;
 using UnityTime = UnityEngine.Time;
 using UnityTextAsset = UnityEngine.TextAsset;
@@ -20,7 +20,7 @@ using UnityMathf = UnityEngine.Mathf;
 using FairyGUI;
 using GameEngine;
 
-namespace Game.Module.View.Fairygui
+namespace GameFramework.View.Fairygui
 {
     /// <summary>
     /// FairyGUI的窗口对象辅助工具类
@@ -249,7 +249,7 @@ namespace Game.Module.View.Fairygui
         /// <summary>
         /// 自定义加载FairyGUI资源
         /// </summary>
-        static UnityObject CustomLoadFairyGUIAsset(string name, string extension, SystemType type, out DestroyMethod method)
+        static UnityObject CustomLoadFairyGUIAsset(string name, string extension, Type type, out DestroyMethod method)
         {
             method = DestroyMethod.Custom;
 

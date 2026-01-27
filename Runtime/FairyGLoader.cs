@@ -8,7 +8,7 @@
 
 using GameEngine;
 
-namespace Game.Module.View.Fairygui
+namespace GameFramework.View.Fairygui
 {
     /// <summary>
     /// FairyGUI加载器的扩展实现类<br/>

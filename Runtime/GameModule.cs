@@ -6,7 +6,7 @@
 /// 功能描述：
 /// </summary>
 
-namespace Game.Module.View.Fairygui
+namespace GameFramework.View.Fairygui
 {
     /// <summary>
     /// 程序集的管理模块对象类

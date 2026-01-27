@@ -22,7 +22,7 @@ using FairyRelationType = FairyGUI.RelationType;
 using UniTask = Cysharp.Threading.Tasks.UniTask;
 using UniTaskCompletionSource = Cysharp.Threading.Tasks.UniTaskCompletionSource;
 
-namespace Game.Module.View.Fairygui
+namespace GameFramework.View.Fairygui
 {
     /// <summary>
     /// UI基础窗口组件
