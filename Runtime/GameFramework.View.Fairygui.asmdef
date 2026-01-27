@@ -1,13 +1,13 @@
 {
-    "name": "Game.Module.View.Fairygui",
+    "name": "GameFramework.View.Fairygui",
     "rootNamespace": "",
     "references": [
         "GooAsset",
-        "Nova.Engine",
-        "Nova.Basic",
-        "Nova.Import",
-        "Nova.UniTask",
-        "Nova.FairyGUI"
+        "NovaFramework.UniTask",
+        "NovaFramework.FairyGUI",
+        "NovaEngine.Kernel",
+        "NovaEngine.Basic",
+        "NovaEngine.Import"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
