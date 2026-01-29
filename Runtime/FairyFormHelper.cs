@@ -125,8 +125,8 @@ namespace GameFramework.View.Fairygui
         /// </summary>
         static void SetContentScaleFactor()
         {
-            GRoot.inst.SetContentScaleFactor(NovaEngine.Environment.designResolutionWidth,
-                                             NovaEngine.Environment.designResolutionHeight);
+            GRoot.inst.SetContentScaleFactor(NovaEngine.Environment.DesignResolutionWidth,
+                                             NovaEngine.Environment.DesignResolutionHeight);
         }
 
         /// <summary>

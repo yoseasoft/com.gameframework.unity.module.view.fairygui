@@ -176,10 +176,10 @@ namespace GameFramework.View.Fairygui
                     return;
                 }
 
-                float normalRate = (float) NovaEngine.Environment.designResolutionHeight / (float) NovaEngine.Environment.designResolutionWidth;
+                float normalRate = (float) NovaEngine.Environment.DesignResolutionHeight / (float) NovaEngine.Environment.DesignResolutionWidth;
                 if (FairyGRoot.inst.width / FairyGRoot.inst.height > normalRate)
                 {
-                    width = NovaEngine.Environment.designResolutionHeight;
+                    width = NovaEngine.Environment.DesignResolutionHeight;
                     Center();
                 }
             }
