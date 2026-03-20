@@ -278,7 +278,7 @@ namespace GameFramework.View.Fairygui
         static async UniTask<bool> AddPackage(string pkgName)
         {
             UIPackage pkg;
-            UnityTextAsset pkgTextAsset = await ResourceHandler.Instance.LoadAssetAsync<UnityTextAsset>($"{FairyGuiResourcePath}{pkgName}{FairyGuiBinaryFileExtensionName}");
+            UnityTextAsset pkgTextAsset = await ResourceHandler.Instance.AsyncLoadAsset<UnityTextAsset>($"{FairyGuiResourcePath}{pkgName}{FairyGuiBinaryFileExtensionName}");
             if (pkgTextAsset != null)
             {
                 UIPackage.AddPackage(pkgTextAsset.bytes, pkgName, CustomLoadFairyGUIAsset);
@@ -308,7 +308,7 @@ namespace GameFramework.View.Fairygui
 
                 string address = $"{FairyGuiResourcePath}{pkgItem.file}";
                 address2Asset ??= new Dictionary<string, GooAsset.Asset>();
-                GooAsset.Asset asset = ResourceHandler.Instance.LoadAssetAsync<UnityObject>(address, null);
+                GooAsset.Asset asset = ResourceHandler.Instance.AsyncLoadAsset<UnityObject>(address, null);
                 if (asset is null)
                 {
                     return false;
@@ -741,7 +741,7 @@ namespace GameFramework.View.Fairygui
                 if (!isSyncLoad)
                 {
                     // 异步加载
-                    ResourceHandler.Instance.LoadAssetAsync<UnityTexture2D>(url, tex => { OnLoadTextureFinish(url, tex as UnityTexture2D, onSuccess, onFail); });
+                    ResourceHandler.Instance.AsyncLoadAsset<UnityTexture2D>(url, tex => { OnLoadTextureFinish(url, tex as UnityTexture2D, onSuccess, onFail); });
                 }
                 else
                 {
