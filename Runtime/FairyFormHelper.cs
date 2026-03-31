@@ -254,7 +254,7 @@ namespace GameFramework.View.Fairygui
             method = DestroyMethod.Custom;
 
             // 不使用FairyGUI的alpha分离,所以直接返回空
-            return name.EndsWith(AlphaTexEndName) ? null : _addressToAsset.GetValueOrDefault($"{FairyGuiResourcePath}{name}{extension}");
+            return name.EndsWith(AlphaTexEndName) ? null : _addressToAsset.GetValueOrDefault($"{FairyGuiResourcePath}/{name}{extension}");
         }
 
         /// <summary>
@@ -278,7 +278,7 @@ namespace GameFramework.View.Fairygui
         static async UniTask<bool> AddPackage(string pkgName)
         {
             UIPackage pkg;
-            UnityTextAsset pkgTextAsset = await ResourceHandler.Instance.AsyncLoadAsset<UnityTextAsset>($"{FairyGuiResourcePath}{pkgName}{FairyGuiBinaryFileExtensionName}");
+            UnityTextAsset pkgTextAsset = await ResourceHandler.Instance.AsyncLoadAsset<UnityTextAsset>($"{FairyGuiResourcePath}/{pkgName}{FairyGuiBinaryFileExtensionName}");
             if (pkgTextAsset != null)
             {
                 UIPackage.AddPackage(pkgTextAsset.bytes, pkgName, CustomLoadFairyGUIAsset);
@@ -306,7 +306,7 @@ namespace GameFramework.View.Fairygui
                     continue;
                 }
 
-                string address = $"{FairyGuiResourcePath}{pkgItem.file}";
+                string address = $"{FairyGuiResourcePath}/{pkgItem.file}";
                 address2Asset ??= new Dictionary<string, GooAsset.Asset>();
                 GooAsset.Asset asset = ResourceHandler.Instance.AsyncLoadAsset<UnityObject>(address, null);
                 if (asset is null)
@@ -366,7 +366,7 @@ namespace GameFramework.View.Fairygui
                     continue;
                 }
 
-                loadedAssetAddressList.Add($"{FairyGuiResourcePath}{pkgItem.file}");
+                loadedAssetAddressList.Add($"{FairyGuiResourcePath}/{pkgItem.file}");
             }
 
             UIPackage.RemovePackage(pkgName);
