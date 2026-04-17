@@ -720,7 +720,7 @@ namespace GameFramework.View.Fairygui
         /// <summary>
         /// 加载外部图片
         /// </summary>
-        /// <param name="param">图片参数(格式:资源路径@是否同步加载(可选参数,不填默认false),例子:%ORIGINAL_RESOURCE_PATH%/resdir/example.prefab@false)</param>
+        /// <param name="param">图片参数(格式:资源路径@是否同步加载(可选参数,不填默认false),例子:%RAW_RESOURCE_PATH%/resdir/example.prefab@false)</param>
         /// <param name="onSuccess">加载成功回调</param>
         /// <param name="onFail">加载失败回调</param>
         internal static void LoadExternalIcon(string param, LoadCompleteCallback onSuccess, LoadErrorCallback onFail)
