@@ -8,17 +8,20 @@
 
 using System;
 using System.Collections.Generic;
+using System.Customize.Extension;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+
+using FairyGUI;
+
+using NovaFramework.AssetLoader;
+using GameEngine;
 
 using UnityObject = UnityEngine.Object;
 using UnityTime = UnityEngine.Time;
 using UnityTextAsset = UnityEngine.TextAsset;
 using UnityTexture2D = UnityEngine.Texture2D;
 using UnityMathf = UnityEngine.Mathf;
-
-using FairyGUI;
-using GameEngine;
 
 namespace GameFramework.View.Fairygui
 {
@@ -55,7 +58,8 @@ namespace GameFramework.View.Fairygui
         /// <summary>
         /// UI资源地址对于的UI资源
         /// </summary>
-        static readonly Dictionary<string, UnityObject> _addressToAsset = new();
+        // static readonly Dictionary<string, UnityObject> _addressToAsset = new();
+        static readonly Dictionary<string, IAssetHandler> _addressToAsset = new();
 
         static string FairyGuiResourcePath
         {
@@ -136,13 +140,15 @@ namespace GameFramework.View.Fairygui
         {
             NTexture.CustomDestroyMethod += obj =>
             {
-                RemoveAssetRecord(obj);
-                ResourceHandler.Instance.UnloadAsset(obj);
+                RemoveAssetRecord(obj, out IAssetHandler assetHandler);
+                // ResourceHandler.Instance.UnloadAsset(obj);
+                assetHandler?.Release();
             };
             NAudioClip.CustomDestroyMethod += obj =>
             {
-                RemoveAssetRecord(obj);
-                ResourceHandler.Instance.UnloadAsset(obj);
+                RemoveAssetRecord(obj, out IAssetHandler assetHandler);
+                // ResourceHandler.Instance.UnloadAsset(obj);
+                assetHandler?.Release();
             };
         }
 
@@ -254,22 +260,25 @@ namespace GameFramework.View.Fairygui
             method = DestroyMethod.Custom;
 
             // 不使用FairyGUI的alpha分离,所以直接返回空
-            return name.EndsWith(AlphaTexEndName) ? null : _addressToAsset.GetValueOrDefault($"{FairyGuiResourcePath}/{name}{extension}");
+            return name.EndsWith(AlphaTexEndName) ? null : _addressToAsset.GetValueOrDefault($"{FairyGuiResourcePath}/{name}{extension}").AssetObject;
         }
 
         /// <summary>
         /// 移除资源记录
         /// </summary>
-        static void RemoveAssetRecord(UnityObject obj)
+        static void RemoveAssetRecord(UnityObject obj, out IAssetHandler assetHandler)
         {
             foreach (var item in _addressToAsset)
             {
-                if (item.Value == obj)
+                if (item.Value.AssetObject == obj)
                 {
+                    assetHandler = item.Value;
                     _addressToAsset.Remove(item.Key);
                     break;
                 }
             }
+
+            assetHandler = null;
         }
 
         /// <summary>
@@ -278,11 +287,15 @@ namespace GameFramework.View.Fairygui
         static async UniTask<bool> AddPackage(string pkgName)
         {
             UIPackage pkg;
-            UnityTextAsset pkgTextAsset = await ResourceHandler.Instance.AsyncLoadAsset<UnityTextAsset>($"{FairyGuiResourcePath}/{pkgName}{FairyGuiBinaryFileExtensionName}");
+            IAssetHandler assetHandler = ResourceHandler.Instance.LoadAssetAsync<UnityTextAsset>($"{FairyGuiResourcePath}/{pkgName}{FairyGuiBinaryFileExtensionName}");
+            await assetHandler.Task;
+
+            UnityTextAsset pkgTextAsset = assetHandler.AssetObject.As<UnityTextAsset>();
             if (pkgTextAsset != null)
             {
                 UIPackage.AddPackage(pkgTextAsset.bytes, pkgName, CustomLoadFairyGUIAsset);
-                ResourceHandler.Instance.UnloadAsset(pkgTextAsset);
+                // ResourceHandler.Instance.UnloadAsset(pkgTextAsset);
+                assetHandler.Release();
 
                 pkg = UIPackage.GetByName(pkgName);
                 if (pkg is null)
@@ -297,7 +310,7 @@ namespace GameFramework.View.Fairygui
                 return false;
             }
 
-            Dictionary<string, GooAsset.Asset> address2Asset = null;
+            Dictionary<string, IAssetHandler> address2Asset = null;
 
             foreach (PackageItem pkgItem in pkg.GetItems())
             {
@@ -307,25 +320,25 @@ namespace GameFramework.View.Fairygui
                 }
 
                 string address = $"{FairyGuiResourcePath}/{pkgItem.file}";
-                address2Asset ??= new Dictionary<string, GooAsset.Asset>();
-                GooAsset.Asset asset = ResourceHandler.Instance.AsyncLoadAsset<UnityObject>(address, null);
-                if (asset is null)
+                address2Asset ??= new Dictionary<string, IAssetHandler>();
+                IAssetHandler pkgAssetHandler = ResourceHandler.Instance.LoadAssetAsync<UnityObject>(address);
+                if (pkgAssetHandler is null)
                 {
                     return false;
                 }
 
-                address2Asset.Add(address, asset);
+                address2Asset.Add(address, pkgAssetHandler);
             }
 
             if (address2Asset != null)
             {
-                GooAsset.Asset[] assets = address2Asset.Values.ToArray();
-                await UniTask.WaitUntil(() => { return assets.All(asset => asset.IsDone); });
+                IAssetHandler[] assetHandlers = address2Asset.Values.ToArray();
+                await UniTask.WaitUntil(() => { return assetHandlers.All(asset => asset.IsDone); });
                 foreach (var kv in address2Asset)
                 {
-                    if (kv.Value.result)
+                    if (kv.Value.AssetObject)
                     {
-                        _addressToAsset[kv.Key] = kv.Value.result;
+                        _addressToAsset[kv.Key] = kv.Value;
                     }
                 }
             }
@@ -374,9 +387,10 @@ namespace GameFramework.View.Fairygui
             // 部分资源都已提前加载但可能未被使用, 导致RemovePackage里面不会调用卸载, 故这里需要再次保证卸载
             foreach (string address in loadedAssetAddressList)
             {
-                if (_addressToAsset.Remove(address, out UnityObject obj))
+                if (_addressToAsset.Remove(address, out IAssetHandler assetHandler))
                 {
-                    ResourceHandler.Instance.UnloadAsset(obj);
+                    // ResourceHandler.Instance.UnloadAsset(obj);
+                    assetHandler.Release();
                 }
             }
         }
@@ -741,7 +755,9 @@ namespace GameFramework.View.Fairygui
                 if (!isSyncLoad)
                 {
                     // 异步加载
-                    ResourceHandler.Instance.AsyncLoadAsset<UnityTexture2D>(url, tex => { OnLoadTextureFinish(url, tex as UnityTexture2D, onSuccess, onFail); });
+                    // ResourceHandler.Instance.LoadAssetAsync<UnityTexture2D>(url, tex => { OnLoadTextureFinish(url, tex as UnityTexture2D, onSuccess, onFail); });
+                    IAssetHandler assetHandler = ResourceHandler.Instance.LoadAssetAsync<UnityTexture2D>(url);
+                    assetHandler.Completed += handler => { OnLoadTextureFinish(url, handler, onSuccess, onFail); };
                 }
                 else
                 {
@@ -756,8 +772,9 @@ namespace GameFramework.View.Fairygui
         /// <summary>
         /// 图片加载完成处理
         /// </summary>
-        static void OnLoadTextureFinish(string url, UnityTexture2D texture2D, LoadCompleteCallback onSuccess, LoadErrorCallback onFail)
+        static void OnLoadTextureFinish(string url, IAssetHandler assetHandler, LoadCompleteCallback onSuccess, LoadErrorCallback onFail)
         {
+            UnityTexture2D texture2D = assetHandler.AssetObject.As<UnityTexture2D>();
             if (texture2D != null)
             {
                 NTexture texture;
@@ -784,7 +801,8 @@ namespace GameFramework.View.Fairygui
                 }
                 else
                 {
-                    ResourceHandler.Instance.UnloadAsset(texture2D);
+                    // ResourceHandler.Instance.UnloadAsset(texture2D);
+                    assetHandler.Release();
                 }
 
                 onSuccess?.Invoke(texture, url);

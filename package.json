@@ -2,7 +2,7 @@
   "name": "com.gameframework.unity.module.view.fairygui",
   "displayName": "GameFramework.View.FairyGUI",
   "description": "The View.FairyGUI module package for GameFramework",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "unity": "2018.3",
   "unityRelease": "0f1",
   "license": "MIT",

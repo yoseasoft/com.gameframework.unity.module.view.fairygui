@@ -2,9 +2,9 @@
     "name": "GameFramework.View.Fairygui",
     "rootNamespace": "",
     "references": [
-        "GooAsset",
         "NovaFramework.UniTask",
         "NovaFramework.FairyGUI",
+        "NovaFramework.AssetLoader",
         "NovaEngine.Kernel",
         "NovaEngine.Basic",
         "NovaEngine.Import"
